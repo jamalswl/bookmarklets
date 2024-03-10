@@ -1,0 +1,45 @@
+javascript:(function() {      
+    var currentUrl = window.location.href;      
+    var supportedWebsites = ['twitter.com', 'facebook.com/', 'instagram.com/', 'tiktok.com/'];      
+    var websiteSupported = false;      
+    
+    supportedWebsites.forEach(function(website) {          
+        if (currentUrl.includes(website)) {              
+            websiteSupported = true;          
+        }      
+    });      
+    
+    if (!websiteSupported) {          
+        alert('Website not supported');          
+        return;      
+    }      
+    
+    if (currentUrl.includes('twitter.com')) {          
+        var t = document.evaluate('//script[@type="application/ld+json"]', document.lastChild, null, XPathResult.ANY_TYPE, null);          
+        var n = t.iterateNext();          
+        if (n) {              
+            var jsonData = JSON.parse(n.textContent);              
+            var userId = jsonData.author && jsonData.author.identifier;              
+            if (userId) {                  
+                alert("Twitter User ID: " + userId);              
+            } else {                  
+                alert("Identifier not found!");              
+            }          
+        }      
+    } else if (currentUrl.includes('facebook.com/') || currentUrl.includes('.facebook.com/')) {          
+        var userIdIndex = document.documentElement.innerHTML.indexOf('"userID":');          
+        var userIdSubstring = document.documentElement.innerHTML.substring(userIdIndex);          
+        var userId = userIdSubstring.match(/\d+/)[0];          
+        alert('The Facebook User ID is ' + userId);      
+    } else if (currentUrl.includes('instagram.com/') || currentUrl.includes('.instagram.com/')) {          
+        var profilePageIndex = document.documentElement.innerHTML.indexOf('profile_id":');          
+        var userIdSubstring = document.documentElement.innerHTML.substring(profilePageIndex);          
+        var userId = userIdSubstring.match(/\d+/)[0];          
+        alert('The Instagram User ID is ' + userId);      
+    } else if (currentUrl.includes('tiktok.com/') || currentUrl.includes('.tiktok.com/')) {          
+        var authorIdIndex = document.documentElement.innerHTML.indexOf('"webapp.user-detail":{"userInfo":{"user":{"id":');          
+        var userIdSubstring = document.documentElement.innerHTML.substring(authorIdIndex);          
+        var userId = userIdSubstring.match(/\d+/)[0];          
+        alert('The TikTok User ID is ' + userId);      
+    }  
+})();
